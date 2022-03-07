@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.Random;
+
 public class Jogo extends ApplicationAdapter {
 
 	//Texturas
@@ -21,8 +23,10 @@ public class Jogo extends ApplicationAdapter {
 	private float variacao = 0;
 	private float gravidade = 2;
 	private float posicaoInicialVerticalPassaro = 0;
-	private float posicaoCanoHorizontal = 0;
+	private float posicaoCanoHorizontal;
+	private float posicaoCanoVertical;
 	private float espacoEntreCanos;
+	private Random random;
 
 	@Override
 	public void create () {
@@ -41,6 +45,14 @@ public class Jogo extends ApplicationAdapter {
 	}
 
 	private void verificarEstadoJogo(){
+
+		//Movimentar cano
+		posicaoCanoHorizontal -= Gdx.graphics.getDeltaTime() * 200;
+		if (posicaoCanoHorizontal < -canoTopo.getWidth()){
+			posicaoCanoHorizontal = larguraDispositivo;
+			posicaoCanoVertical = random.nextInt(400) - 200;
+
+		}
 
 		//Aplica evento de toque na tela
 		boolean toqueTela = Gdx.input.justTouched();
@@ -66,8 +78,8 @@ public class Jogo extends ApplicationAdapter {
 
 		batch.draw(fundo, 0,0, larguraDispositivo, alturaDispositivo);
 		batch.draw(passaros[(int) variacao], 0, posicaoInicialVerticalPassaro);
-		batch.draw(canoBaixo, posicaoCanoHorizontal -100, alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos / 2);
-		batch.draw(canoTopo, posicaoCanoHorizontal -100, alturaDispositivo / 2 + espacoEntreCanos / 2);
+		batch.draw(canoBaixo, posicaoCanoHorizontal , alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos / 2 + posicaoCanoVertical);
+		batch.draw(canoTopo, posicaoCanoHorizontal , alturaDispositivo / 2 + espacoEntreCanos / 2 + posicaoCanoVertical);
 		batch.end();
 
 	}
@@ -87,6 +99,7 @@ public class Jogo extends ApplicationAdapter {
 	private void inicializarObjetos(){
 
 		batch = new SpriteBatch();
+		random = new Random();
 
 		larguraDispositivo = Gdx.graphics.getWidth();
 		alturaDispositivo = Gdx.graphics.getHeight();
